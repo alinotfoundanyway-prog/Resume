@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ali Nazemi - Cybersecurity Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #10a7f3;
+            --secondary-color: #00a2ff;
+            --dark-bg: #000000;
+            --darker-bg: #000000;
+            --card-bg: rgba(0, 0, 0, 0.9);
+            --text-light: #f0f0f0;
+            --text-med: #c5c5c5;
+            --text-dark: #544f80;
+            --border-color: #302f2f;
+            --highlight-color: #ffcc00;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            background-image: 
+                linear-gradient(rgba(40, 40, 60, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(40, 40, 60, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Canvas for floating objects */
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* ✅ NEW: Music Box */
+        #music-box {
+            position: absolute;
+            top: 88%;
+            left: 90%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(16, 167, 243, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(0, 183, 255, 0.3);
+            transition: all 0.5s ease;
+            border: 2px solid var(--secondary-color);
+        }
+
+        #music-box:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            background: rgba(0, 102, 255, 0.2);
+            box-shadow: 0 0 50px rgba(0, 204, 255, 0.6);
+        }
+
+        #music-icon {
+            font-size: 48px;
+            color: var(--secondary-color);
+            opacity: 0.9;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            padding: 60px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            box-shadow: 0 0 120px rgba(0, 170, 255, 0.1);
+            backdrop-filter: blur(15px);
+            animation: fadeIn 1.8s ease;
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-med);
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            animation: fadeIn 2s ease;
+        }
+
+        .section {
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(25, 25, 25, 0.7);
+            border-radius: 18px;
+            border-left: 6px solid var(--border-color);
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+
+        .section:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 170, 255, 0.1);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        h2::before {
+            content: "●";
+            color: var(--primary-color);
+            margin-right: 15px;
+            font-size: 1.8rem;
+        }
+
+        p, li {
+            color: var(--text-med);
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 12px;
+            position: relative;
+            opacity: 0.9;
+        }
+        li::before {
+            content: '▹';
+            color: var(--primary-color);
+            margin-right: 15px;
+            font-size: 1.2rem;
+            display: inline-block;
+            width: 1.5em;
+            text-align: left;
+        }
+
+        .skill-bar-container {
+            margin-top: 15px;
+        }
+        .skill-bar {
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        .skill-bar-fill {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0;
+            transition: width 1.5s ease-in-out;
+            border-radius: 5px;
+        }
+
+        .contact {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 15px 35px;
+            border-radius: 60px;
+            background: linear-gradient(90deg, var(--primary-color), #00ccff);
+            color: #fff;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 1px;
+            box-shadow: 0 0 25px rgba(0, 170, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: all .4s ease;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            box-shadow: 0 0 40px rgba(0, 170, 255, 0.6);
+            transform: translateY(-6px) scale(1.05);
+        }
+
+        .button::after {
+            content: '';
+            position: absolute;
+            left: -80%;
+            top: 0;
+            width: 80%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: skewX(-25deg);
+            transition: left .5s ease;
+        }
+
+        .button:hover::after {
+            left: 140%;
+        }
+
+        svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            position: relative;
+            z-index: 2;
+        }
+
+        .subscriber-count {
+            display: inline-block;
+            font-weight: 600;
+            color: var(--highlight-color);
+            margin-left: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .container { width: 95%; padding: 30px; }
+            h1 { font-size: 2.8rem; }
+            .subtitle { font-size: 1rem; }
+            #music-box { width: 100px; height: 100px; }
+            #music-icon { font-size: 40px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container">
+        <canvas id="floatingCanvas"></canvas>
+    </div>
+
+    <!-- ✅ NEW: Music Box (replaces gramophone) -->
+    <div id="music-box" title="Hover to play random music">
+        <span id="music-icon">♪</span>
+    </div>
+
+    <div class="container">
+        <h1>ALI NAZEMI</h1>
+        <div class="subtitle">Junior Pentester & Cybersecurity Enthusiast</div>
+
+        <div class="section">
+            <h2>Personal Details</h2>
+            <p>Nationality: Iran<br>Birthday: April 25th 2007<br>Hobbies: Music</p>
+        </div>
+
+        <div class="section">
+            <h2>Employment</h2>
+            <p>A junior Pentester currently working on various projects within the cybersecurity industry.</p>
+        </div>
+
+        <div class="section">
+            <h2>Education</h2>
+            <p>Student of Computer Engineering at IAU South Tehran.</p>
+        </div>
+
+        <div class="section">
+            <h2>Technical Skills</h2>
+            <ul>
+                <li>Microsoft Office Suite <div class="skill-bar-container"><div class="skill-bar"><div class="skill-bar-fill" data-width="80"></div></div></div></li>
+                <li>Linux (Kali) <div class="skill-bar-container"><div class="skill-bar"><div class="skill-bar-fill" data-width="90"></div></div></div></li>
+                <li>Windows <div class="skill-bar-container"><div class="skill-bar"><div class="skill-bar-fill" data-width="85"></div></div></div></li>
+                <li>JIRA & Confluence <div class="skill-bar-container"><div class="skill-bar"><div class="skill-bar-fill" data-width="75"></div></div></div></li>
+                <li>Pentest Tools (Burp Suite, Acunetix, etc.) <div class="skill-bar-container"><div class="skill-bar"><div class="skill-bar-fill" data-width="88"></div></div></div></li>
+                <li>Python <div class="skill-bar-container"><div class="skill-bar"><div class="skill-bar-fill" data-width="70"></div></div></div></li>
+                <li>Networking++ <div class="skill-bar-container"><div class="skill-bar"><div class="skill-bar-fill" data-width="82"></div></div></div></li>
+            </ul>
+        </div>
+
+        <div class="section contact">
+            <h2>Get In Touch</h2>
+            <p>Email: <a href="mailto:alinotfoundanyway@gmail.com" style="color: var(--primary-color); text-decoration: underline;">alinotfoundanyway@gmail.com</a></p>
+            <a class="button" href="https://t.me/homesweethomemusic" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9.04 15.82l-.39 5.47c.56 0 .81-.24 1.11-.53l2.67-2.55 5.54 4.05c1.02.56 1.74.26 2.01-.94l3.64-17.06c.37-1.67-.61-2.33-1.71-1.92L1.56 9.27c-1.65.64-1.63 1.56-.28 1.98l4.9 1.53L18.6 6.04c.58-.35 1.11-.16.67.19"/>
+                </svg>
+                Contact Music (Telegram: <span class="subscriber-count" id="liveSubCount">31</span>)
+            </a>
+        </div>
+
+        <footer>
+            © 2025 Ali Nazemi — All rights reserved.
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // === Keep your existing canvas animation (unchanged) ===
+            const canvas = document.getElementById('floatingCanvas');
+            const ctx = canvas.getContext('2d');
+            const container = document.getElementById('canvas-container');
+
+            function resizeCanvas() {
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            let mouseX = canvas.width / 2;
+            let mouseY = canvas.height / 2;
+            let mouseRadius = 150;
+
+            document.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
+            });
+
+            const objects = [];
+            const types = ['pawn', 'book', 'laptop'];
+            const colors = { pawn: '#ffffff', book: '#00ffcc', laptop: '#00aaff' };
+            const sizes = { pawn: 15, book: 20, laptop: 25 };
+
+            function createObject() {
+                const type = types[Math.floor(Math.random() * types.length)];
+                return {
+                    type: type,
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: sizes[type] * (0.8 + Math.random() * 0.4),
+                    color: colors[type],
+                    speedX: (Math.random() - 0.5) * 0.5,
+                    speedY: (Math.random() - 0.5) * 0.5,
+                    angle: Math.random() * Math.PI * 2,
+                    rotationSpeed: (Math.random() - 0.5) * 0.02
+                };
+            }
+
+            for (let i = 0; i < 25; i++) {
+                objects.push(createObject());
+            }
+
+            function drawPawn(ctx, x, y, size, color) {
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(0, 0, size * 0.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(-size * 0.3, size * 0.4);
+                ctx.lineTo(size * 0.3, size * 0.4);
+                ctx.lineTo(size * 0.2, size * 0.8);
+                ctx.lineTo(-size * 0.2, size * 0.8);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+
+            function drawBook(ctx, x, y, size, color) {
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.fillStyle = color;
+                ctx.fillRect(-size * 0.4, -size * 0.3, size * 0.8, size * 0.6);
+                ctx.fillStyle = '#d0d0d0';
+                ctx.fillRect(-size * 0.35, -size * 0.25, size * 0.7, size * 0.5);
+                ctx.restore();
+            }
+
+            function drawLaptop(ctx, x, y, size, color) {
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.fillStyle = color;
+                ctx.fillRect(-size * 0.4, -size * 0.3, size * 0.8, size * 0.4);
+                ctx.fillStyle = '#333';
+                ctx.fillRect(-size * 0.4, size * 0.1, size * 0.8, size * 0.2);
+                ctx.restore();
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.fillStyle = 'rgba(13, 13, 13, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                objects.forEach(obj => {
+                    const dx = obj.x - mouseX;
+                    const dy = obj.y - mouseY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < mouseRadius) {
+                        const force = (mouseRadius - distance) / mouseRadius;
+                        const angle = Math.atan2(dy, dx);
+                        obj.speedX += Math.cos(angle) * force * 0.1;
+                        obj.speedY += Math.sin(angle) * force * 0.1;
+                    }
+
+                    obj.x += obj.speedX;
+                    obj.y += obj.speedY;
+
+                    if (obj.x < 0 || obj.x > canvas.width) obj.speedX *= -1;
+                    if (obj.y < 0 || obj.y > canvas.height) obj.speedY *= -1;
+
+                    obj.x = Math.max(0, Math.min(canvas.width, obj.x));
+                    obj.y = Math.max(0, Math.min(canvas.height, obj.y));
+
+                    obj.speedX *= 0.98;
+                    obj.speedY *= 0.98;
+                    obj.angle += obj.rotationSpeed;
+
+                    ctx.save();
+                    ctx.translate(obj.x, obj.y);
+                    ctx.rotate(obj.angle);
+                    switch (obj.type) {
+                        case 'pawn': drawPawn(ctx, 0, 0, obj.size, obj.color); break;
+                        case 'book': drawBook(ctx, 0, 0, obj.size, obj.color); break;
+                        case 'laptop': drawLaptop(ctx, 0, 0, obj.size, obj.color); break;
+                    }
+                    ctx.restore();
+                });
+            }
+
+            animate();
+
+            // === Skill bars & subscriber count (unchanged) ===
+            const skillBars = document.querySelectorAll('.skill-bar-fill');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const width = entry.target.getAttribute('data-width');
+                        entry.target.style.width = width + '%';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            skillBars.forEach(bar => observer.observe(bar));
+
+            const subCountElement = document.getElementById('liveSubCount');
+            let mockSubCount = parseInt(subCountElement.textContent);
+            setInterval(() => {
+                const change = Math.floor(Math.random() * 3) - 1;
+                mockSubCount = Math.max(31, mockSubCount + change);
+                subCountElement.textContent = mockSubCount.toString();
+            }, 5000);
+
+            // ✅ NEW: Music Box Audio System
+            const musicBox = document.getElementById('music-box');
+            let audioContext = null;
+            let currentSource = null;
+
+            // 🔊 === ADD YOUR MUSIC URLS HERE (must be public .mp3 files) ===
+            const songs = [
+                "https://yourusername.github.io/your-repo/song1.mp3",
+                "https://yourusername.github.io/your-repo/song2.mp3",
+                "https://yourusername.github.io/your-repo/song3.mp3"
+            ];
+
+            function playRandomSong() {
+                // Initialize audio context on first user interaction (required by browsers)
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+
+                // Stop currently playing audio
+                if (currentSource) {
+                    currentSource.stop();
+                    currentSource = null;
+                }
+
+                // Pick random song
+                const url = songs[Math.floor(Math.random() * songs.length)];
+
+                // Load and play
+                fetch(url)
+                    .then(res => {
+                        if (!res.ok) throw new Error(`Failed to load: ${url}`);
+                        return res.arrayBuffer();
+                    })
+                    .then(buffer => audioContext.decodeAudioData(buffer))
+                    .then(audioBuffer => {
+                        currentSource = audioContext.createBufferSource();
+                        currentSource.buffer = audioBuffer;
+                        currentSource.connect(audioContext.destination);
+                        currentSource.start(0);
+                    })
+                    .catch(err => {
+                        console.error("Music playback failed:", err);
+                        // Optional: show user-friendly message
+                    });
+            }
+
+            musicBox.addEventListener('mouseenter', playRandomSong);
+            musicBox.addEventListener('mouseleave', () => {
+                if (currentSource) {
+                    currentSource.stop();
+                    currentSource = null;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
